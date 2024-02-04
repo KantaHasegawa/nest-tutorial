@@ -3,7 +3,10 @@ import { TodoService } from './todo.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TodoController } from './todo.controller';
 import { Todo } from './todo.entity';
-import { Repository } from 'typeorm';
+
+const mockTodoRepositoryFactory = jest.fn(() => ({
+  find: jest.fn().mockReturnValue([]),
+}));
 
 describe('TodoService', () => {
   let service: TodoService;
@@ -15,7 +18,7 @@ describe('TodoService', () => {
         TodoService,
         {
           provide: getRepositoryToken(Todo),
-          useClass: Repository,
+          useValue: mockTodoRepositoryFactory(),
         },
       ],
     }).compile();
@@ -25,5 +28,9 @@ describe('TodoService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('list', async () => {
+    expect(await service.findAll()).toEqual([]);
   });
 });

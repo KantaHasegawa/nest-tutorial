@@ -5,6 +5,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Todo } from './todo.entity';
 import { Repository } from 'typeorm';
 
+class mockTodoRepository extends Repository<Todo> {
+  find(): Promise<Todo[]> {
+    return Promise.resolve([]);
+  }
+}
+
 describe('TodoController', () => {
   let controller: TodoController;
 
@@ -15,7 +21,7 @@ describe('TodoController', () => {
         TodoService,
         {
           provide: getRepositoryToken(Todo),
-          useClass: Repository,
+          useValue: mockTodoRepository,
         },
       ],
     }).compile();
