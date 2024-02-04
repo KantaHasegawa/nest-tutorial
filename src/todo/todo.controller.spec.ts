@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodoController } from './todo.controller';
+import { TodoService } from './todo.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Todo } from './todo.entity';
+import { Repository } from 'typeorm';
 
 describe('TodoController', () => {
   let controller: TodoController;
@@ -7,6 +11,13 @@ describe('TodoController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TodoController],
+      providers: [
+        TodoService,
+        {
+          provide: getRepositoryToken(Todo),
+          useClass: Repository,
+        },
+      ],
     }).compile();
 
     controller = module.get<TodoController>(TodoController);
